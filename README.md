@@ -18,12 +18,12 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
+<!-- [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
 [![MIT License][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
+[![LinkedIn][linkedin-shield]][linkedin-url] -->
 
 
 
@@ -85,16 +85,18 @@
 
 [![Product Name Screen Shot][product-screenshot]](https://t.me/handi_cat_bot)
 
-There are many great README templates available on GitHub; however, I didn't find one that really suited my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
+Handi Cat is a Telegram bot that can track any Solana wallet in real time, providing relevant information 
+of that transaction including transaction hash, tokens and amount swapped, price of the token in SOl,
+token market cap and much more.
 
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
+## Features
 
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-Use the `BLANK_README.md` to get started.
+* 📈 Real-time tracking of any transaction
+* 🔍 Detects Pump Fun or Raydium transactions
+* 💰 Gets SOL price of the token swapped
+* 📊 Get tokens market cap at the time swapped
+* 🤖 Each transaction message includes links to popular Solana trading bots to quickly buy the token
+* 🔗 Each transaction provides links to Photon, GMGN and Dex Screener to quickly see the token
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -102,18 +104,12 @@ Use the `BLANK_README.md` to get started.
 
 ## Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* Node.JS
+* Typescript
+* Prisma and Prisma Pulse
+* Solana Web3js
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
@@ -144,21 +140,19 @@ Follow these simple steps to setup Handi Cat locally on your machine
 SUPABASE_DATABASE_URL=postgresql://postgres.[DATABASE-NAME]:[YOUR-PASSWORD]@aws-0-us-east-1.pooler.supabase.com:5432/postgres?pgbouncer=true
 ```
 
-6. Now you need to setup `Prisma Pulse` for real time database logs, follow these post to set it up with your `Supabase` database:
+6. Now you need to setup `Prisma Pulse` for real time database logs, follow these post to set it up with your `Supabase` database: [Setup Prisma Pulse with a Supabase database](https://medium.com/@dilsharahasanka/prisma-pulse-hands-on-guide-b220954b3245)
 
-[Setup Prisma Pulse with a Supabase database](https://medium.com/@dilsharahasanka/prisma-pulse-hands-on-guide-b220954b3245)
-
-6. After you get your `Prisma Pulse` API key, paste it in this environment variable
+7. After you get your `Prisma Pulse` API key, paste it in this environment variable
 ```js
 PULSE_API_KEY=your-api-key
 ```
 
-7. Now you can create a new `Telegram Bot` using `Bot Father` and get your bot API key, then paste it here:
+8. Now you can create a new `Telegram Bot` using `Bot Father` and get your bot API key, then paste it here:
 ```js
 BOT_TOKEN=your-bot-token
 ```
 
-8. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup a custom RPC or your wallet to get subscription fees
+9. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup a custom RPC or your wallet to get subscription fees
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
