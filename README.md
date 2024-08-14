@@ -24,7 +24,7 @@
 [![Product Name Screen Shot][product-screenshot]](https://t.me/handi_cat_bot)
 
 Handi Cat is a Telegram bot that can track any Solana wallet in real time, providing relevant information 
-of each transaction made in Pump.fun or Raydium including transaction hash, tokens and amount swapped, price of the token in SOl, token market cap and much more.
+of each transaction made in Pump.fun or Raydium including transaction hash, tokens and amount swapped, price of the token in SOL, token market cap and much more.
 
 ## Features
 
@@ -115,7 +115,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 [@your_twitter](https://twitter.com/your_username) - rdraco039@gmail.com
 
-If you want support my work - FCaAuHzjkdWKdepjYHk3ddob8MZDoCV1La6MFcAhC9Rv
+My solana wallet ff you want support my work - `FCaAuHzjkdWKdepjYHk3ddob8MZDoCV1La6MFcAhC9Rv`
 
 Project Link: [https://github.com/DracoR22/handi-cat_wallet-tracker](https://github.com/DracoR22/handi-cat_wallet-tracker)
 
