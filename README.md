@@ -1,4 +1,5 @@
 <!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
+
 <a id="readme-top"></a>
 
 <!-- PROJECT LOGO -->
@@ -19,36 +20,36 @@
 </div>
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
 [![Product Name Screen Shot][product-screenshot]](https://t.me/handi_cat_bot)
 
-Handi Cat is a Telegram bot that can track any Solana wallet in real time, providing relevant information 
+Handi Cat is a Telegram bot that can track any Solana wallet in real time, providing relevant information
 of each transaction made in Pump.fun or Raydium including transaction hash, tokens and amount swapped, price of the token in SOL, token market cap and much more.
 
 ## Features
 
-* 📈 Real-time tracking of any transaction
-* 🔍 Detects Pump.fun or Raydium transactions
-* 💰 Gets SOL price of the token swapped
-* 📊 Get tokens market cap at the time swapped
-* 🤖 Each transaction message includes links to popular Solana trading bots to quickly buy the token
-* 🔗 Each transaction provides links to Photon, GMGN and Dex Screener to quickly see the token
+- 📈 Real-time tracking of any transaction
+- 🔍 Detects Pump.fun or Raydium transactions
+- 💰 Gets SOL price of the token swapped
+- 📊 Get tokens market cap at the time swapped
+- 🤖 Each transaction message includes links to popular Solana trading bots to quickly buy the token
+- 🔗 Each transaction provides links to Photon, GMGN and Dex Screener to quickly see the token
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 ## Built With
 
-* 🌐 Node.JS
-* 📘 TypeScript
-* 📊 Prisma and Prisma Pulse
-* 🪙 Solana Web3.js
+- 🌐 Node.JS
+- 📘 TypeScript
+- 📊 Prisma and Prisma Pulse
+- 🪙 Solana Web3.js
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
+
 ## Getting Started
 
 Follow these simple steps to setup Handi Cat locally on your machine
@@ -60,11 +61,13 @@ Follow these simple steps to setup Handi Cat locally on your machine
 ### Steps
 
 1. Clone the repo
+
    ```sh
    git clone https://github.com/DracoR22/handi-cat_wallet-tracker.git
    ```
 
 2. Install NPM packages
+
    ```sh
    pnpm install
    ```
@@ -72,9 +75,9 @@ Follow these simple steps to setup Handi Cat locally on your machine
 3. Rename `.env.example` file to `.env`
 
 4. Go to `supabase.com` and create a free database
-  
+
 5. In your `Supabase` dashboard go to `Project Settings` -> `Database` paste the connection string into `SUPABASE_DATABASE_URL` environment variable. Make sure you activate the `pooler connection` and set the
-port to `5432`
+   port to `5432`
 
 6. Now you need to [Setup Prisma Pulse with a Supabase database](https://medium.com/@dilsharahasanka/prisma-pulse-hands-on-guide-b220954b3245) for real time database logs
 
@@ -84,10 +87,10 @@ port to `5432`
 
 9. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup a custom RPC or your wallet to get subscription fees
 
-
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
+
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -102,15 +105,15 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 <!-- LICENSE -->
+
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
-
 <!-- CONTACT -->
+
 ## Contact
 
 [@your_twitter](https://twitter.com/your_username) - rdraco039@gmail.com
@@ -121,9 +124,9 @@ Project Link: [https://github.com/DracoR22/handi-cat_wallet-tracker](https://git
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [contributors-shield]: https://img.shields.io/github/contributors/othneildrew/Best-README-Template.svg?style=for-the-badge
 [contributors-url]: https://github.com/othneildrew/Best-README-Template/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/othneildrew/Best-README-Template.svg?style=for-the-badge
