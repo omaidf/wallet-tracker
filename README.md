@@ -103,7 +103,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 ## Contact
 
-[@your_twitter](https://twitter.com/your_username) - rdraco039@gmail.com
+<!-- [@your_twitter](https://twitter.com/your_username)  --> - rdraco039@gmail.com
 
 My solana wallet if you want support my work - `CAThY97SjWz1nRjtVELZopz1xKRqkRkBWhXvA2BHdkdf`
 
