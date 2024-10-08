@@ -6,7 +6,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="public/handi-cat.jpg" alt="Logo" width="80" height="80">
+    <img src="showcase/handi-cat.jpg" alt="Logo" width="80" height="80">
   </a>
 
   <h3 align="center">🐱 Handi Cat</h3>
@@ -127,4 +127,4 @@ Project Link: [https://github.com/DracoR22/handi-cat_wallet-tracker](https://git
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [telegram-bot]: https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white
-[product-screenshot]: public/demo.png
+[product-screenshot]: showcase/demo.png
