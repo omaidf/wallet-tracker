@@ -74,18 +74,15 @@ Follow these simple steps to setup Handi Cat locally on your machine
 
 3. Rename `.env.example` file to `.env`
 
-4. Go to `supabase.com` and create a free database
+4. Create a Postgres database
 
-5. In your `Supabase` dashboard go to `Project Settings` -> `Database` paste the connection string into `SUPABASE_DATABASE_URL` environment variable. Make sure you activate the `pooler connection` and set the
-   port to `5432`
+5. Enable Prisma Pulse for real-time database logs
 
-6. Now you need to [Setup Prisma Pulse with a Supabase database](https://medium.com/@dilsharahasanka/prisma-pulse-hands-on-guide-b220954b3245) for real time database logs
+6. After you get your `Prisma Pulse` API key, paste it in the `PULSE_API_KEY` environment variable
 
-7. After you get your `Prisma Pulse` API key, paste it in the `PULSE_API_KEY` environment variable
+7. Create a new `Telegram Bot` using `Bot Father` and get your `BOT_TOKEN`, then paste it in the environment variable
 
-8. Create a new `Telegram Bot` using `Bot Father` and get your `BOT_TOKEN`, then paste it in the environment variable
-
-9. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup a custom RPC or your wallet to get subscription fees
+8. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup a custom RPC or your wallet to get subscription fees
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
