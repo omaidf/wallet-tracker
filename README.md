@@ -26,12 +26,12 @@
 [![Product Name Screen Shot][product-screenshot]](https://t.me/handi_cat_bot)
 
 Handi Cat is a Telegram bot that can track any Solana wallet in real time, providing relevant information
-of each transaction made in Pump.fun or Raydium including transaction hash, tokens and amount swapped, price of the token in SOL, token market cap and much more.
+of each transaction made in Pump.fun, Raydium and Jupiter including transaction hash, tokens and amount swapped, price of the token in SOL, token market cap and much more.
 
 ## Features
 
 - 📈 Real-time tracking of any transaction
-- 🔍 Detects Pump.fun or Raydium transactions
+- 🔍 Detects Pump.fun, Raydium and Jupiter transactions
 - 💰 Gets SOL price of the token swapped
 - 📊 Get tokens market cap at the time swapped
 - 🤖 Each transaction message includes links to popular Solana trading bots to quickly buy the token
@@ -85,7 +85,19 @@ Follow these simple steps to setup Handi Cat locally on your machine
 
 8. Create a new `Telegram Bot` using `Bot Father` and get your `BOT_TOKEN`, then paste it in the environment variable
 
-9. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup a custom RPC or your wallet to get subscription fees
+9. Run migrate command to push the database schemas and generate all types
+
+```sh
+  pnpm db:migrate
+```
+
+10. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup an RPC of your choice
+
+11. Start the bot
+
+```sh
+  pnpm start
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
