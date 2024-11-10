@@ -77,7 +77,8 @@ Follow these simple steps to setup Handi Cat locally on your machine
 4. Go to `supabase.com` and create a free database
 
 5. In your `Supabase` dashboard go to `Project Settings` -> `Database` paste the connection string into `SUPABASE_DATABASE_URL` environment variable. Make sure you activate the `pooler connection` and set the
-   port to `5432`
+   port to `5432` your connection string should look like this: `postgresql://postgres.[PROJECT_URL]:[YOUR-PASSWORD]@aws-0-[YOUR-DB-REGION].pooler.supabase.com:5432/postgres?pgbouncer=true
+`
 
 6. Now you need to [Setup Prisma Pulse with a Supabase database](https://medium.com/@dilsharahasanka/prisma-pulse-hands-on-guide-b220954b3245) for real time database logs
 
