@@ -94,21 +94,11 @@ Follow these simple steps to setup Handi Cat locally on your machine
 
 10. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup an RPC of your choice
 
-11. Start the bot
+11. Start the bot (note that you will have to setup an rpc provider in `src/providers/solana.ts`, you can change it to `SOLANA_NETWORK` if you dont have one)
 
 ```sh
   pnpm start
 ```
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-<!-- CONTRIBUTING -->
-
-<!-- LICENSE -->
-
-## License
-
-Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -118,7 +108,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <!-- [@your_twitter](https://twitter.com/your_username)  --> - rdraco039@gmail.com
 
-My solana wallet if you want support my work - `CAThY97SjWz1nRjtVELZopz1xKRqkRkBWhXvA2BHdkdf`
+My solana wallet for the struggles - `CAThY97SjWz1nRjtVELZopz1xKRqkRkBWhXvA2BHdkdf`
 
 Project Link: [https://github.com/DracoR22/handi-cat_wallet-tracker](https://github.com/DracoR22/handi-cat_wallet-tracker)
 
