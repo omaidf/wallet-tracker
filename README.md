@@ -5,11 +5,11 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
+  <a href="https://github.com/DracoR22/handi-cat_wallet-tracker">
     <img src="showcase/handi-cat.jpg" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">🐱 Handi Cat</h3>
+  <h3 align="center">🐱 Handi Cat | Wallet Tracker</h3>
 
   <p align="center">
     Track any Solana transaction in Real-Time
@@ -92,13 +92,15 @@ Follow these simple steps to setup Handi Cat locally on your machine
   pnpm db:migrate
 ```
 
-10. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup an RPC of your choice
-
-11. Start the bot (note that you will have to setup an rpc provider in `src/providers/solana.ts`, you can change it to `SOLANA_NETWORK` if you dont have one)
+10. Start the bot (note that you will have to setup an rpc provider in `src/providers/solana.ts`, you can change it to `SOLANA_NETWORK` if you dont have one)
 
 ```sh
   pnpm start
 ```
+
+11. That's it! now your local version of Handi Cat is ready, you can also fill the other environment variables to setup an RPC of your choice
+
+<p align="center"><img src="./showcase/cli-pic.png" width="95%" alt="Screenshot of bot succesfully running"/></>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
