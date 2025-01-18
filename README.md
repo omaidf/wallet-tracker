@@ -92,7 +92,9 @@ Follow these simple steps to setup Handi Cat locally on your machine
   pnpm db:migrate
 ```
 
-10. Start the bot (note that you will have to setup an rpc provider in `src/providers/solana.ts`, you can change it to `SOLANA_NETWORK` if you dont have one)
+10. Now you have to setup an rpc provider in `src/providers/solana.ts`, you can change all NETWORKS to `SOLANA_NETWORK` if you dont have one
+
+11. Start the bot
 
 ```sh
   pnpm start
