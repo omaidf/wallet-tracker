@@ -34,8 +34,9 @@ of each transaction made in Pump.fun, Raydium and Jupiter including transaction 
 - 🔍 Detects Pump.fun, Raydium and Jupiter transactions
 - 💰 Gets SOL price of the token swapped
 - 📊 Get tokens market cap at the time swapped
+- 💰 Gets token amount and supply percentage owned by each tracked wallet
 - 🤖 Each transaction message includes links to popular Solana trading bots to quickly buy the token
-- 🔗 Each transaction provides links to Photon, GMGN and Dex Screener to quickly see the token
+- 🔗 Each transaction provides links to Photon, GMGN and Dex Screener to quickly see the token chart
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -112,7 +113,7 @@ Follow these simple steps to setup Handi Cat locally on your machine
 
 <!-- [@your_twitter](https://twitter.com/your_username)  --> - rdraco039@gmail.com
 
-My solana wallet for the struggles - `CAThY97SjWz1nRjtVELZopz1xKRqkRkBWhXvA2BHdkdf`
+My solana wallet for the struggles - `2MqEFduTn5Kux334v7EBeBWuChyPdNLJ94r7PZzUqWJw`
 
 Project Link: [https://github.com/DracoR22/handi-cat_wallet-tracker](https://github.com/DracoR22/handi-cat_wallet-tracker)
 
@@ -134,4 +135,4 @@ Project Link: [https://github.com/DracoR22/handi-cat_wallet-tracker](https://git
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/othneildrew
 [telegram-bot]: https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white
-[product-screenshot]: showcase/demo.png
+[product-screenshot]: showcase/notifications-new.png
