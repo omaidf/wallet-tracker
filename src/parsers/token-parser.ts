@@ -1,6 +1,6 @@
 import { Connection, PublicKey, VersionedTransactionResponse } from '@solana/web3.js'
-import { Collection, Data, Metadata, TokenStandard, Uses, deprecated } from '@metaplex-foundation/mpl-token-metadata'
-import {} from '../providers/solana'
+import { Collection, Data, Metadata, TokenStandard, Uses } from '@metaplex-foundation/mpl-token-metadata'
+import { PROGRAM_ID as TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
 
 interface TokenInfo {
   key: string
@@ -22,7 +22,10 @@ export class TokenParser {
 
   public async getTokenInfo(tokenMint: string): Promise<TokenInfo> {
     const mintPublicKey = new PublicKey(tokenMint)
-    const tokenmetaPubkey = await deprecated.Metadata.getPDA(mintPublicKey)
+    const [tokenmetaPubkey] = PublicKey.findProgramAddressSync(
+      [Buffer.from('metadata'), TOKEN_METADATA_PROGRAM_ID.toBuffer(), mintPublicKey.toBuffer()],
+      TOKEN_METADATA_PROGRAM_ID,
+    )
     const tokenContent = await Metadata.fromAccountAddress(this.connection, tokenmetaPubkey)
 
     const token = tokenContent.pretty()

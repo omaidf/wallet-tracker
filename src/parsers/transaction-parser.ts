@@ -136,7 +136,7 @@ export class TransactionParser {
       // for raydium transactions
       if (transactions.length > 1) {
         if (nativeBalance?.type === 'sell') {
-          tokenOutMint = await this.tokenUtils.getTokenMintAddress(transactions[0]?.info.destination)
+          tokenOutMint = (await this.tokenUtils.getTokenMintAddress(transactions[0]?.info.destination)) ?? ''
           tokenInMint = 'So11111111111111111111111111111111111111112'
 
           if (tokenOutMint === null) {
@@ -149,7 +149,7 @@ export class TransactionParser {
           tokenOut = tokenOutInfo.data.symbol.replace(/\x00/g, '')
           tokenIn = 'SOL'
         } else {
-          tokenInMint = await this.tokenUtils.getTokenMintAddress(raydiumTransfer.info.source)
+          tokenInMint = (await this.tokenUtils.getTokenMintAddress(raydiumTransfer.info.source)) ?? ''
           tokenOutMint = 'So11111111111111111111111111111111111111112'
 
           if (tokenInMint === null) {
@@ -261,7 +261,7 @@ export class TransactionParser {
         // }
 
         if (nativeBalance?.type === 'sell') {
-          tokenOutMint = await this.tokenUtils.getTokenMintAddressWithFallback(transactions)
+          tokenOutMint = (await this.tokenUtils.getTokenMintAddressWithFallback(transactions)) ?? ''
           tokenInMint = 'So11111111111111111111111111111111111111112'
 
           if (tokenOutMint === null) {
@@ -275,7 +275,7 @@ export class TransactionParser {
           tokenIn = 'SOL'
         } else {
           tokenOutMint = 'So11111111111111111111111111111111111111112'
-          tokenInMint = await this.tokenUtils.getTokenMintAddressWithFallback(transactions)
+          tokenInMint = (await this.tokenUtils.getTokenMintAddressWithFallback(transactions)) ?? ''
 
           if (tokenInMint === null) {
             console.log('NO TOKEN IN MINT')

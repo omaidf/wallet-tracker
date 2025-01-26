@@ -7,13 +7,16 @@ const SOLANA_NETWORK = clusterApiUrl('mainnet-beta')
 const HELIUS_NETWORK = `https://mainnet.helius-rpc.com/?api-key=${process.env.HELIUS_API_KEY}`
 const CHAINSTACK_NETWORK = process.env.CHAINSTACK_API_KEY ?? ''
 const QUICKNODE_NETWORK = process.env.QUICKNODE_API_KEY ?? ''
+const USE_SOLANA_RPC = process.env.USE_SOLANA_RPC === 'true'
 
 // I use a separate helius connection to just get the logs cause i found this is the fastest one and will get most of the notifications
 
 // If you are going to use Handi Cat locally you can just use SOLANA_NETWORK for all connections
 // and will work fine as long you dont track too many wallets
 export class RpcConnectionManager {
-  static connections = [new Connection(CHAINSTACK_NETWORK, 'confirmed'), new Connection(QUICKNODE_NETWORK, 'confirmed')]
+  static connections: Connection[] = USE_SOLANA_RPC
+    ? [new Connection(SOLANA_NETWORK, 'confirmed')]
+    : [new Connection(CHAINSTACK_NETWORK, 'confirmed'), new Connection(QUICKNODE_NETWORK, 'confirmed')]
 
   static logConnection = new Connection(HELIUS_NETWORK, 'processed')
 

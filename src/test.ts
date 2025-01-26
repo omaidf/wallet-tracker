@@ -15,7 +15,6 @@ import chalk from 'chalk'
 import { TokenParser } from './parsers/token-parser'
 import { FormatNumbers } from './lib/format-numbers'
 
-// @ts-expect-error
 import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token'
 
 function isRelevantTransaction(logs: Logs): { isRelevant: boolean; program: SwapType } {
@@ -187,7 +186,7 @@ async function getTokenHoldings(walletAddress: string, tokenMintAddress: string)
     console.log('PERCENTAGE', fixedPercentage)
     return {
       balance: tokenAccountInfo.amount.toString(),
-      decimals: tokenAccountInfo.decimals,
+      decimals: tokenSupply.value.decimals,
     }
   } catch (error) {
     console.log('Error fetching token holdings:', error)

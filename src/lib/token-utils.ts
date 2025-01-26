@@ -1,5 +1,4 @@
 import { Connection, LAMPORTS_PER_SOL, ParsedTransactionWithMeta, PublicKey } from '@solana/web3.js'
-// @ts-expect-error
 import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token'
 
 import axios from 'axios'
