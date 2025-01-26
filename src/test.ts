@@ -16,6 +16,7 @@ import { TokenParser } from './parsers/token-parser'
 import { FormatNumbers } from './lib/format-numbers'
 
 import { getAccount, getAssociatedTokenAddress } from '@solana/spl-token'
+import { TrackWallets } from './lib/track-wallets'
 
 function isRelevantTransaction(logs: Logs): { isRelevant: boolean; program: SwapType } {
   // Guard clause for empty logs
@@ -47,9 +48,8 @@ const programIds = [PUMP_FUN_PROGRAM_ID, RAYDIUM_PROGRAM_ID, JUPITER_PROGRAM_ID]
 
 export const test2 = async () => {
   const walletAddresses = [
-    'DfMxre4cKmvogbLrPigxmibVTTQDuzjdXojWzjCXXhzj',
-    'AsX67niuMc9F91tQFeHvHiUEAnXwam4VoHTbRZ84935W',
-    'JDWmTTSZv2wkRkRKkeXa44j8Q7M4SW3XFMwYYBf7hwdi',
+    '5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9',
+    '5VCwKtCXgCJ6kit5FybXjvriW3xELsFDhYrPSqtJNmcD',
   ]
 
   for (const walletAddress of walletAddresses) {
@@ -69,7 +69,7 @@ export const test2 = async () => {
         console.log(chalk.greenBright('YES ITS RELEVANT', logs.signature))
         console.log('Program:', program)
       },
-      'processed',
+      'confirmed',
     )
   }
 }
@@ -139,12 +139,12 @@ export const parseTransactions = async () => {
       const preBalance = preBalances[i]
       const postBalance = postBalances[i]
 
-      console.log(`PRE BALANCE [${i}]: `, preBalance)
-      console.log(`POST BALANCE [${i}]: `, postBalance)
+      // console.log(`PRE BALANCE [${i}]: `, preBalance)
+      // console.log(`POST BALANCE [${i}]: `, postBalance)
 
       const solDifference = (postBalance! - preBalance!) / 1e9 // Convert lamports to SOL
 
-      console.log('SOL DIFFERENCE: ', solDifference)
+      // console.log('SOL DIFFERENCE: ', solDifference)
 
       if (solDifference < 0 && i === 1) {
         totalSolSwapped += Math.abs(solDifference)
@@ -200,6 +200,17 @@ async function getTokenHoldings(walletAddress: string, tokenMintAddress: string)
   }
 }
 
-getTokenHoldings('', '')
-// parseTransactions()
-// test2()
+const TEST_WALLET = '5ho9wT4YVTbetpNBFiZAFn7sJ74GgvgjVTUWDnwmPW1U' // Example wallet
+
+async function main() {
+  const trackWallets = new TrackWallets()
+
+  try {
+    await trackWallets.trackWallet(TEST_WALLET)
+    console.log('Tracking started. Press Ctrl+C to stop.')
+  } catch (error) {
+    console.error('Error starting tracker:', error)
+  }
+}
+
+main()

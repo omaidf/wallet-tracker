@@ -1,6 +1,6 @@
 import { Prisma, User } from '@prisma/client'
 
-export type SwapType = 'pumpfun' | 'raydium' | 'jupiter' | 'mint_pumpfun' | null
+export type SwapType = 'raydium' | 'jupiter' | 'pumpfun' | 'mint_pumpfun' | null
 
 export type WalletWithUsers = Prisma.WalletGetPayload<{
   include: {
@@ -27,4 +27,13 @@ export type WalletsToTrack = {
       user: Pick<User, 'id'>
     },
   ]
+}
+
+export interface TokenTransfer {
+  tokenAmountIn: string
+  tokenAmountOut: string
+  tokenInSymbol: string
+  tokenOutSymbol: string
+  tokenInMint: string
+  tokenOutMint: string
 }

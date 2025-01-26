@@ -18,7 +18,7 @@ export class RpcConnectionManager {
     ? [new Connection(SOLANA_NETWORK, 'confirmed')]
     : [new Connection(CHAINSTACK_NETWORK, 'confirmed'), new Connection(QUICKNODE_NETWORK, 'confirmed')]
 
-  static logConnection = new Connection(HELIUS_NETWORK, 'processed')
+  static logConnection = new Connection(HELIUS_NETWORK, 'confirmed')
 
   static getRandomConnection(): Connection {
     const randomIndex = Math.floor(Math.random() * RpcConnectionManager.connections.length)

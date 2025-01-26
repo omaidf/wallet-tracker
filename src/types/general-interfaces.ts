@@ -1,27 +1,26 @@
-import TelegramBot from 'node-telegram-bot-api'
 import { SwapType, WalletWithUsers } from './swap-types'
 
 export interface NativeParserInterface {
+  type: 'buy' | 'sell'
   platform: SwapType
   owner: string
-  description: string
-  type: string | undefined
-  balanceChange: string | number | undefined
   signature: string
-  swappedTokenMc: number | null | undefined
-  swappedTokenPrice: number | null | undefined
-  solPrice: string
-  currentHoldingPrice: string
-  currenHoldingPercentage: string
-  isNew: boolean
   tokenTransfers: {
+    tokenAmountIn: string
+    tokenAmountOut: string
     tokenInSymbol: string
     tokenOutSymbol: string
     tokenInMint: string
     tokenOutMint: string
-    tokenAmountIn: string
-    tokenAmountOut: string
   }
+  solPrice: string
+  swappedTokenPrice: number
+  currenHoldingPercentage: string
+  currentHoldingPrice: string
+  swappedTokenMc: number
+  description: string
+  balanceChange: number
+  isNew: boolean
 }
 
 export interface CreateUserInterface {
@@ -54,7 +53,6 @@ export interface UserGroup {
 
 export interface TxPerSecondCapInterface {
   wallet: WalletWithUsers
-  bot: TelegramBot
   walletData: { count: number; startTime: number }
   excludedWallets: Map<string, boolean>
 }

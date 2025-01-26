@@ -132,7 +132,6 @@ export class TransactionParser {
       // }
 
       // const solPrice = ''
-
       // for raydium transactions
       if (transactions.length > 1) {
         if (nativeBalance?.type === 'sell') {
@@ -181,16 +180,16 @@ export class TransactionParser {
 
         // // const tokenInInfo = await this.tokenParser.getTokenInfo(tokenInMint)
         // const cleanedTokenInSymbol = tokenInInfo.data.symbol.replace(/\x00/g, '')
-
-        const formattedAmountOut = FormatNumbers.formatTokenAmount(Number(transactions[0]?.info?.amount))
+        const amountOutValue = Number(transactions[0]?.info?.amount)
+        const formattedAmountOut = FormatNumbers.formatTokenAmount(amountOutValue)
         const formattedAmountIn = FormatNumbers.formatTokenAmount(Number(raydiumTransfer?.info?.amount))
 
         // owner = parsedInfos[0]?.info?.source ? parsedInfos[0]?.info?.source : transactions[0]?.info?.authority
         owner = signerAccountAddress ? signerAccountAddress : transactions[0]?.info?.authority
         amountOut =
-          tokenOut === 'SOL' ? (Number(transactions[0]?.info?.amount) / 1e9).toFixed(2).toString() : formattedAmountOut
+          tokenOut === 'SOL' ? (Number(transactions[0]?.info?.amount) / 1e9).toFixed(4).toString() : formattedAmountOut
         amountIn =
-          tokenIn === 'SOL' ? (Number(raydiumTransfer.info.amount) / 1e9).toFixed(2).toString() : formattedAmountIn
+          tokenIn === 'SOL' ? (Number(raydiumTransfer.info.amount) / 1e9).toFixed(4).toString() : formattedAmountIn
 
         // tokenOut = cleanedTokenOutSymbol
         // tokenIn = cleanedTokenInSymbol
@@ -199,7 +198,6 @@ export class TransactionParser {
         let raydiumTokenPrice: number | null | undefined = null
 
         const swapDescription = `${owner} swapped ${amountOut} ${tokenOut} for ${amountIn} ${tokenIn}`
-
         // get the token price and market cap for raydium
         if (transactions.length[0]?.info?.amount !== transactions[1]?.info?.amount) {
           const tokenPrice = await this.tokenUtils.getTokenPriceRaydium(
@@ -226,11 +224,11 @@ export class TransactionParser {
           platform: swap,
           owner: owner,
           description: swapDescription,
-          type: nativeBalance?.type,
-          balanceChange: nativeBalance?.balanceChange,
+          type: nativeBalance?.type as 'buy' | 'sell',
+          balanceChange: nativeBalance?.balanceChange as number,
           signature: this.transactionSignature,
-          swappedTokenMc: tokenMc,
-          swappedTokenPrice: raydiumTokenPrice,
+          swappedTokenMc: tokenMc as number,
+          swappedTokenPrice: raydiumTokenPrice as number,
           solPrice: solPriceUsd || '',
           currenHoldingPercentage: currenHoldingPercentage,
           currentHoldingPrice: currentHoldingPrice,
@@ -300,8 +298,8 @@ export class TransactionParser {
         const formattedAmount = FormatNumbers.formatTokenAmount(Number(transactions[0]?.info?.amount))
 
         owner = signerAccountAddress ? signerAccountAddress : transactions[0]?.info?.authority
-        amountOut = nativeBalance?.type === 'sell' ? formattedAmount : totalSolSwapped.toFixed(2).toString()
-        amountIn = nativeBalance?.type === 'sell' ? totalSolSwapped.toFixed(2).toString() : formattedAmount
+        amountOut = nativeBalance?.type === 'sell' ? formattedAmount : totalSolSwapped.toFixed(4).toString()
+        amountIn = nativeBalance?.type === 'sell' ? totalSolSwapped.toFixed(4).toString() : formattedAmount
 
         // console.log('OWNER', signerAccountAddress)
         const swapDescription = `${owner} swapped ${amountOut} ${tokenOut} for ${amountIn} ${tokenIn}`
@@ -328,11 +326,11 @@ export class TransactionParser {
           platform: swap,
           owner: owner,
           description: swapDescription,
-          type: nativeBalance?.type,
-          balanceChange: nativeBalance?.balanceChange,
+          type: nativeBalance?.type as 'buy' | 'sell',
+          balanceChange: nativeBalance?.balanceChange as number,
           signature: this.transactionSignature,
-          swappedTokenMc: tokenMc,
-          swappedTokenPrice: tokenPrice,
+          swappedTokenMc: tokenMc as number,
+          swappedTokenPrice: tokenPrice as number,
           solPrice: solPriceUsd || '',
           isNew: isNew,
           currenHoldingPercentage: currenHoldingPercentage,

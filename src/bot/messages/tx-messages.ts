@@ -1,5 +1,6 @@
 import { FormatNumbers } from '../../lib/format-numbers'
 import { NativeParserInterface } from '../../types/general-interfaces'
+import chalk from 'chalk'
 
 export class TxMessages {
   constructor() {}
@@ -95,5 +96,20 @@ ${marketCapText}
 <code>${tokenMintToTrack}</code>   
 `
     return messageText
+  }
+
+  public formatTransactionMessage(tx: NativeParserInterface): string {
+    const truncatedOwner = `${tx.owner.slice(0, 4)}...${tx.owner.slice(-4)}`
+    const formattedMc = tx.swappedTokenMc ? FormatNumbers.formatPrice(tx.swappedTokenMc) : 'N/A'
+
+    return `
+${tx.type === 'buy' ? chalk.green('🟢 BUY') : chalk.red('🔴 SELL')} on ${chalk.yellow(tx.platform?.toUpperCase())}
+💎 Wallet: ${truncatedOwner}
+🔗 Signature: ${tx.signature}
+${tx.description}
+Price: $${tx.swappedTokenPrice?.toFixed(7)}
+Market Cap: $${formattedMc}
+Holdings: ${tx.currentHoldingPrice} (${tx.currenHoldingPercentage}%)
+`
   }
 }

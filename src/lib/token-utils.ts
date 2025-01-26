@@ -16,6 +16,7 @@ import { PumpCurveState } from '../types/pumpfun-types'
 import { BufferUtils } from './buffer-utils'
 import { RpcConnectionManager } from '../providers/solana'
 import { FormatNumbers } from './format-numbers'
+import { Logger } from '../utils/logger'
 
 dotenv.config()
 
@@ -58,6 +59,7 @@ export class TokenUtils {
 
     const preBalances = meta.preBalances
     const postBalances = meta.postBalances
+    const GAS_FEE_THRESHOLD = (transactionDetails[0]?.meta?.fee || 0) / 1e9
 
     if (!preBalances || !postBalances) {
       console.log('No balance information available')
@@ -77,7 +79,7 @@ export class TokenUtils {
           accountIndex: i,
           preBalance: preBalance! / 1e9, // Convert to SOL
           postBalance: postBalance! / 1e9, // Convert to SOL
-          change: solDifference,
+          change: solDifference + GAS_FEE_THRESHOLD,
         })
       }
     }
@@ -85,11 +87,12 @@ export class TokenUtils {
     // Log the results
     if (balanceChanges.length > 0) {
       const firstChange = balanceChanges[0]
-      // console.log(`Account Index ${firstChange.accountIndex} native balance change:`);
-      // console.log(`Pre Balance: ${firstChange.preBalance} SOL`);
-      // console.log(`Post Balance: ${firstChange.postBalance} SOL`);
-      // console.log(`Change: ${firstChange.change} SOL`);
-      // console.log('-----------------------------------');
+      // console.log('BALANCE CHANGES', firstChange!.change > 0)
+      // console.log(`Account Index ${firstChange.accountIndex} native balance change:`)
+      // console.log(`Pre Balance: ${firstChange.preBalance} SOL`)
+      // console.log(`Post Balance: ${firstChange.postBalance} SOL`)
+      // console.log(`Change: ${firstChange.change} SOL`)
+      // console.log('-----------------------------------')
       const type = firstChange!.change > 0 ? 'sell' : 'buy'
       return {
         type,
@@ -168,13 +171,9 @@ export class TokenUtils {
 
       const splTokenBalance: any = await this.getTokenBalance(tokenAccountAddress)
       const wrappedSolBalance: any = await this.getTokenBalance(tokenAccountAddressWrappedSol)
-      // const solPriceInUsd: any = await this.getSolPriceNative()
 
       const priceOfSPLTokenInSOL = wrappedSolBalance / 1_000_000_000 / (splTokenBalance / 1_000_000)
       let priceOfSPLTokenInUSD = priceOfSPLTokenInSOL * solPriceInUsd
-
-      // console.log('PRICE IN USD FIXED', priceOfSPLTokenInUSD.toFixed(10))
-      // console.log('SOL PRICE TOKEN', priceOfSPLTokenInSOL)
 
       if (priceOfSPLTokenInUSD.toString().includes('e')) {
         // Convert the scientific notation number to a fixed decimal number string
@@ -193,13 +192,9 @@ export class TokenUtils {
 
       const splTokenBalance: any = await this.getTokenBalance(tokenAccountAddress)
       const wrappedSolBalance: any = await this.getTokenBalance(tokenAccountAddressWrappedSol)
-      // const solPriceInUsd: any = await this.getSolPriceNative()
 
       const priceOfSPLTokenInSOL = wrappedSolBalance / 1_000_000_000 / (splTokenBalance / 1_000_000)
       let priceOfSPLTokenInUSD = priceOfSPLTokenInSOL * solPriceInUsd
-
-      // console.log('PRICE IN USD FIXED', priceOfSPLTokenInUSD.toFixed(10))
-      // console.log('SOL PRICE TOKEN', priceOfSPLTokenInSOL)
 
       if (priceOfSPLTokenInUSD.toString().includes('e')) {
         // Convert the scientific notation number to a fixed decimal number string
@@ -341,23 +336,31 @@ export class TokenUtils {
       const walletPublicKey = new PublicKey(walletAddress)
       const tokenMintPublicKey = new PublicKey(tokenMintAddress)
 
-      const associatedTokenAddress = await getAssociatedTokenAddress(tokenMintPublicKey, walletPublicKey)
-      const tokenAccountInfo = await getAccount(this.connection, associatedTokenAddress)
+      try {
+        const associatedTokenAddress = await getAssociatedTokenAddress(tokenMintPublicKey, walletPublicKey)
+        const tokenAccountInfo = await getAccount(this.connection, associatedTokenAddress)
 
-      const percentage = isPump
-        ? Number(tokenAccountInfo.amount) / Number(tokenSupply) / 10000
-        : (Number(tokenAccountInfo.amount) / Number(tokenSupply)) * 100
-      const fixedPercentage = percentage > 0 ? `${percentage.toFixed(2)}` : '0'
+        const percentage = isPump
+          ? Number(tokenAccountInfo.amount) / Number(tokenSupply) / 10000
+          : (Number(tokenAccountInfo.amount) / Number(tokenSupply)) * 100
+        const fixedPercentage = percentage > 0 ? `${percentage.toFixed(2)}` : '0'
 
-      const balance = FormatNumbers.formatTokenAmount(Number(tokenAccountInfo.amount))
+        const balance = FormatNumbers.formatTokenAmount(Number(tokenAccountInfo.amount))
 
-      return {
-        balance: balance,
-        percentage: fixedPercentage,
+        return {
+          balance: balance,
+          percentage: fixedPercentage,
+        }
+      } catch (error: any) {
+        // Handle case where token account doesn't exist
+        if (error.name === 'TokenAccountNotFoundError') {
+          Logger.info(`No token account found for ${tokenMintAddress} in wallet ${walletAddress}`)
+          return { balance: '0', percentage: '0' }
+        }
+        throw error // Re-throw other errors
       }
     } catch (error) {
-      console.log('Error fetching token holdings:', error)
-
+      Logger.error('Error fetching token holdings:', error)
       return { balance: '0', percentage: '0' }
     }
   }

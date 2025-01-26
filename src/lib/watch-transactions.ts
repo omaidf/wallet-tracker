@@ -1,9 +1,7 @@
 import { Connection, PublicKey, LogsFilter, Logs } from '@solana/web3.js'
-import { ValidTransactions } from './valid-transactions'
 import EventEmitter from 'events'
 import { TransactionParser } from '../parsers/transaction-parser'
 import { SendTransactionMsgHandler } from '../bot/handlers/send-tx-msg-handler'
-import { bot } from '../providers/telegram'
 import { SwapType, WalletWithUsers } from '../types/swap-types'
 import { RateLimit } from './rate-limit'
 import {
@@ -18,6 +16,7 @@ import { NativeParserInterface } from '../types/general-interfaces'
 import pLimit from 'p-limit'
 import { CronJobs } from './cron-jobs'
 import { PrismaUserRepository } from '../repositories/prisma/user'
+import { Logger } from '../utils/logger'
 
 export const trackedWallets: Set<string> = new Set()
 
@@ -89,17 +88,6 @@ export class WatchTransaction extends EventEmitter {
               return
             }
 
-            const isWalletRateLimited = await this.rateLimit.txPerSecondCap({
-              wallet,
-              bot,
-              excludedWallets: this.excludedWallets,
-              walletData,
-            })
-
-            if (isWalletRateLimited) {
-              return
-            }
-
             const transactionSignature = logs.signature
 
             const randomConnection = RpcConnectionManager.getRandomConnection()
@@ -125,7 +113,7 @@ export class WatchTransaction extends EventEmitter {
             // Use bot to send message of transaction
             await this.sendMessagesToUsers(wallet, parsed)
           },
-          'processed',
+          'confirmed',
         )
 
         // Store subscription ID
@@ -142,7 +130,7 @@ export class WatchTransaction extends EventEmitter {
   public async getParsedTransaction(transactionSignature: string, retries = 4) {
     for (let attempt = 1; attempt <= retries; attempt++) {
       try {
-        const transactionDetails = await RpcConnectionManager.connections[1].getParsedTransactions(
+        const transactionDetails = await RpcConnectionManager.getRandomConnection().getParsedTransactions(
           [transactionSignature],
           {
             maxSupportedTransactionVersion: 0,
@@ -167,8 +155,6 @@ export class WatchTransaction extends EventEmitter {
   }
 
   private async sendMessagesToUsers(wallet: WalletWithUsers, parsed: NativeParserInterface) {
-    const sendMessageHandler = new SendTransactionMsgHandler(bot)
-
     const pausedUsers = (await this.prismaUserRepository.getPausedUsers(wallet.userWallets.map((w) => w.userId))) || []
 
     const activeUsers = wallet.userWallets.filter(
@@ -187,7 +173,8 @@ export class WatchTransaction extends EventEmitter {
         if (user) {
           // console.log('Users:', user)
           try {
-            await sendMessageHandler.send(parsed, user.userId)
+            Logger.info(`Message Text: ${parsed}`)
+            Logger.info(`User ID: ${user.userId}`)
           } catch (error) {
             console.log(`Error sending message to user ${user.userId}`)
           }
@@ -198,12 +185,35 @@ export class WatchTransaction extends EventEmitter {
     await Promise.all(tasks)
   }
 
-  private isRelevantTransaction(logs: Logs): { isRelevant: boolean; swap: SwapType } {
+  public isRelevantTransaction(logs: Logs): { isRelevant: boolean; swap: SwapType } {
     if (!logs.logs || logs.logs.length === 0) {
       return { isRelevant: false, swap: null }
     }
 
     const logString = logs.logs.join(' ')
+
+    if (logString.includes(PUMP_FUN_TOKEN_MINT_AUTH)) {
+      return { isRelevant: true, swap: 'mint_pumpfun' }
+    }
+    if (logString.includes(PUMP_FUN_PROGRAM_ID)) {
+      return { isRelevant: true, swap: 'pumpfun' }
+    }
+    if (logString.includes(JUPITER_PROGRAM_ID)) {
+      return { isRelevant: true, swap: 'jupiter' }
+    }
+    if (logString.includes(RAYDIUM_PROGRAM_ID)) {
+      return { isRelevant: true, swap: 'raydium' }
+    }
+
+    return { isRelevant: false, swap: null }
+  }
+
+  public isRelevantTransaction2(logs: Logs[]): { isRelevant: boolean; swap: SwapType } {
+    if (!logs || logs.length === 0) {
+      return { isRelevant: false, swap: null }
+    }
+
+    const logString = logs.join(' ')
 
     if (logString.includes(PUMP_FUN_TOKEN_MINT_AUTH)) {
       return { isRelevant: true, swap: 'mint_pumpfun' }

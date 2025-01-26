@@ -7,7 +7,7 @@ export type TokenInfoPump = {
   video_uri: string | null
   metadata_uri: string
   twitter: string | null
-  telegram: string | null
+  telegram?: string | null
   bonding_curve: string
   associated_bonding_curve: string
   creator: string

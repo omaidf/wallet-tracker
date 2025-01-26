@@ -8,7 +8,6 @@ import { PromotionType, SubscriptionPlan, User, UserSubscription } from '@prisma
 import { PrismaSubscriptionRepository } from '../repositories/prisma/subscription'
 import { PaymentsMessageEnum } from '../types/messages-types'
 import { format } from 'date-fns'
-import { GeneralMessages } from '../bot/messages/general-messages'
 import { PrismaGroupRepository } from '../repositories/prisma/group'
 
 export class Payments {

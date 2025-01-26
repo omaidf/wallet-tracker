@@ -1,21 +1,31 @@
 export class FormatNumbers {
   constructor() {}
 
-  static formatTokenAmount(amount: number) {
-    // console.log('AMOUNT', amount)
-    let scaledAmount: number
+  static formatsScaledAmount(amount: number) {
+    return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(amount)
+  }
 
-    if (amount >= 1e9) {
-      scaledAmount = amount / 1e6
-    } else if (amount >= 1e8) {
-      scaledAmount = amount / 1e5
-    } else if (amount >= 1e6) {
-      scaledAmount = amount / 1e3
-    } else {
-      scaledAmount = amount
-    }
-    // Format the scaled amount with maximum two fraction digits
-    return new Intl.NumberFormat('en-US', { maximumFractionDigits: 2, minimumFractionDigits: 2 }).format(scaledAmount)
+  static formatTokenAmount(amount: number) {
+    let scaledAmount: number
+    scaledAmount = amount / 1e6
+    return this.formatsScaledAmount(scaledAmount)
+
+    // if (amount >= 1e9) {
+    //   scaledAmount = amount / 1e6
+    //   console.log('SCALED AMOUNT with 1e6', scaledAmount)
+    //   return this.formatsScaledAmount(scaledAmount)
+    // } else if (amount >= 1e8) {
+    //   scaledAmount = amount / 1e5
+    //   console.log('SCALED AMOUNT with 1e5', scaledAmount)
+    //   return this.formatsScaledAmount(scaledAmount)
+    // } else if (amount >= 1e6) {
+    //   scaledAmount = amount / 1e3
+    //   console.log('SCALED AMOUNT with 1e3', scaledAmount)
+    //   return this.formatsScaledAmount(scaledAmount)
+    // } else {
+    //   scaledAmount = amount
+    //   return this.formatsScaledAmount(scaledAmount)
+    // }
   }
 
   static formatPrice(value: number): string {

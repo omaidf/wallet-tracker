@@ -1,6 +1,7 @@
 import { Connection, PublicKey, VersionedTransactionResponse } from '@solana/web3.js'
 import { Collection, Data, Metadata, TokenStandard, Uses } from '@metaplex-foundation/mpl-token-metadata'
 import { PROGRAM_ID as TOKEN_METADATA_PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata'
+import {} from '../providers/solana'
 
 interface TokenInfo {
   key: string

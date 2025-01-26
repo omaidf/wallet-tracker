@@ -1,17 +1,14 @@
-import TelegramBot from 'node-telegram-bot-api'
 import { TokenPrices } from '../../lib/token-prices-api'
 import { FormatNumbers } from '../../lib/format-numbers'
-import { createTxSubMenu } from '../../config/bot-menus'
 import { TxMessages } from '../messages/tx-messages'
 import { PrismaWalletRepository } from '../../repositories/prisma/wallet'
 import { NativeParserInterface } from '../../types/general-interfaces'
+import { Logger } from '../../utils/logger'
 
 export class SendTransactionMsgHandler {
   private tokenPrices: TokenPrices
   private prismaWalletRepository: PrismaWalletRepository
-  constructor(private bot: TelegramBot) {
-    this.bot = bot
-
+  constructor() {
     this.tokenPrices = new TokenPrices()
     this.prismaWalletRepository = new PrismaWalletRepository()
   }
@@ -20,8 +17,6 @@ export class SendTransactionMsgHandler {
     const tokenToMc = message.type === 'buy' ? message.tokenTransfers.tokenInMint : message.tokenTransfers.tokenOutMint
     const tokenToMcSymbol =
       message.type === 'buy' ? message.tokenTransfers.tokenInSymbol : message.tokenTransfers.tokenOutSymbol
-
-    const TX_SUB_MENU = createTxSubMenu(tokenToMcSymbol, tokenToMc)
 
     const walletName = await this.prismaWalletRepository.getUserWalletNameById(chatId, message.owner)
 
@@ -44,11 +39,8 @@ export class SendTransactionMsgHandler {
         const tokenPrice = message.swappedTokenPrice
 
         const messageText = TxMessages.txMadeMessage(message, formattedMarketCap, walletName?.name)
-        return this.bot.sendMessage(chatId, messageText, {
-          parse_mode: 'HTML',
-          disable_web_page_preview: true,
-          reply_markup: TX_SUB_MENU,
-        })
+        Logger.info(`Message Text: ${messageText}`)
+        return
       } else if (message.platform === 'pumpfun') {
         // const tokenInfo = await this.tokenPrices.gmgnTokenInfo(tokenToMc)
         // let tokenMarketCap = tokenInfo?.market_cap
@@ -60,20 +52,14 @@ export class SendTransactionMsgHandler {
         const formattedMarketCap = tokenMarketCap ? FormatNumbers.formatPrice(tokenMarketCap) : undefined
 
         const messageText = TxMessages.txMadeMessage(message, formattedMarketCap, walletName?.name)
-        return this.bot.sendMessage(chatId, messageText, {
-          parse_mode: 'HTML',
-          disable_web_page_preview: true,
-          reply_markup: TX_SUB_MENU,
-        })
+        Logger.info(`Message Text: ${messageText}`)
+        return
       } else if (message.platform === 'mint_pumpfun') {
         // new!
         const messageText = TxMessages.tokenMintedMessage(message, walletName?.name)
 
-        return this.bot.sendMessage(chatId, messageText, {
-          parse_mode: 'HTML',
-          disable_web_page_preview: true,
-          reply_markup: TX_SUB_MENU,
-        })
+        Logger.info(`Message Text: ${messageText}`)
+        return
       }
     } catch (error: any) {
       if (error.response && error.response.statusCode === 403) {

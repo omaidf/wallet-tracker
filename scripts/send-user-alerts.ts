@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client'
-import { bot } from '../src/providers/telegram'
 import { MAX_WHALE_WALLETS } from '../src/constants/pricing'
 import chalk from 'chalk'
 
@@ -29,23 +28,6 @@ const sendMessage = async () => {
 
     for (const user of allUsers) {
       try {
-        await bot.sendMessage(
-          user.id,
-          `
-⚠️ Important Update ⚠️
-
-This is your LAST CHANCE to get a <b>LIFETIME</b> plan! 🚨 Starting next week, we’re switching to a subscription-based model.
-
-Upgrade now to track up to <b>${MAX_WHALE_WALLETS}</b> wallets with a one-time payment — no recurring fees! 🐾
-
-🔗 Don't miss out on this opportunity to lock in a lifetime plan before it's gone forever.
-
-🕒 Offer ends soon — act fast! ⏳
-`,
-          {
-            parse_mode: 'HTML',
-          },
-        )
         console.info(chalk.bold.green(`Message sent successfully to user with ID: ${user.id}`))
         await messageDelay(100) // Delay to avoid hitting rate limits
       } catch (error) {
