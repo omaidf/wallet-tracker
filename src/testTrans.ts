@@ -1,10 +1,10 @@
-import fs from 'fs'
 import { TransactionParser } from './parsers/transaction-parser'
 import { Logger } from './utils/logger'
 import { CronJobs } from './lib/cron-jobs'
 import { WatchTransaction } from './lib/watch-transactions'
 import { TokenUtils } from './lib/token-utils'
 import { RpcConnectionManager } from './providers/solana'
+import fs from 'fs'
 
 const main = async () => {
   try {
@@ -12,14 +12,17 @@ const main = async () => {
     // const transaction_json = fs.readFileSync('transaction.json', 'utf8')
     // const transaction = JSON.parse(transaction_json)
     const transaction = await RpcConnectionManager.logConnection.getParsedTransaction(
-      '2mbUkR77ufZ8Aw7gRT52gQnCxRceQLobFMERuPrF6FXXePwLC86UXt3A8E1xmHUsdVNgsqzNz76egcuLeEo5cFyg',
+      '4dBf8MozPRj17jwuUgYMU8S6ma8pUu5tWP98xxrsAYDUZXA1ZgnNGQ1HSWZKDNhq5mzdbPhCgztdL29aMLD1pJgx',
       {
         maxSupportedTransactionVersion: 0,
       },
     )
 
+    fs.writeFileSync('transaction2.json', JSON.stringify(transaction, null, 2))
+
     // Get SOL price
-    const solPriceUsd = CronJobs.getSolPrice() || (await TokenUtils.getSolPriceNative())
+    // const solPriceUsd = CronJobs.getSolPrice() || (await TokenUtils.getSolPriceNative())
+    const solPriceUsd = '227.38'
     if (!solPriceUsd) {
       Logger.error('Failed to get SOL price')
       return

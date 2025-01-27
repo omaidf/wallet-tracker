@@ -34,6 +34,20 @@ export class NativeParser {
       description: '',
       balanceChange: 0,
       isNew: false,
+      isLargeBuy: false,
+      isMultiBuy: false,
+      isWhaleActivity: false,
+      multiBuyStats: {
+        uniqueWallets: 0,
+        totalSolAmount: 0,
+        recentBuys: [],
+      },
+      isMultiSell: false,
+      multiSellStats: {
+        uniqueWallets: 0,
+        totalSolAmount: 0,
+        recentSells: [],
+      },
     }
   }
 
@@ -65,6 +79,20 @@ export class NativeParser {
         description: this.generateDescription(type, tokenTransfers),
         balanceChange: this.calculateBalanceChange(tx),
         isNew: false,
+        isLargeBuy: false,
+        isMultiBuy: false,
+        isWhaleActivity: false,
+        multiBuyStats: {
+          uniqueWallets: 0,
+          totalSolAmount: 0,
+          recentBuys: [],
+        },
+        isMultiSell: false,
+        multiSellStats: {
+          uniqueWallets: 0,
+          totalSolAmount: 0,
+          recentSells: [],
+        },
       }
     } catch (error) {
       Logger.error('Error parsing transaction:', error)

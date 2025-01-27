@@ -51,7 +51,7 @@ export class TrackWallets {
                 return
               }
               const transactionSignature = logs.signature
-              console.log('transactionSignature', transactionSignature)
+              Logger.info(`transactionSignature: ${transactionSignature}`)
 
               const transactionDetails = await this.getTransactionDetails(transactionSignature)
               if (!transactionDetails) {
@@ -66,7 +66,6 @@ export class TrackWallets {
                 // console.log('NO PARSED')
                 return
               }
-              Logger.info(JSON.stringify(parsed, null, 2))
               this.consoleNotificationHandler.send(parsed)
             } catch (error) {
               Logger.error('Error parsing transaction:', error)
@@ -134,7 +133,6 @@ export class TrackWallets {
         console.log('NO PARSED')
         return
       }
-      Logger.info(JSON.stringify(parsed, null, 2))
       this.consoleNotificationHandler.send(parsed)
     } catch (error) {
       Logger.error('Error fetching recent transactions:', error)

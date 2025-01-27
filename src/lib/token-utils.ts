@@ -20,6 +20,8 @@ import { Logger } from '../utils/logger'
 
 dotenv.config()
 
+const minimumChange = Number(process.env.MINIMUM_CHANGE ?? 1)
+
 export class TokenUtils {
   constructor(private connection: Connection) {
     this.connection = connection
@@ -30,7 +32,7 @@ export class TokenUtils {
       const accountInfo = await getAccount(this.connection, tokenPublicKey)
       return accountInfo.mint.toBase58()
     } catch (error) {
-      console.log(`Error fetching mint address for token ${tokenAddress}:`, error)
+      Logger.error(`Error fetching mint address for token ${tokenAddress}:`, error)
       return null
     }
   }
@@ -49,11 +51,14 @@ export class TokenUtils {
     return tokenOutMint
   }
 
-  public calculateNativeBalanceChanges(transactionDetails: (ParsedTransactionWithMeta | null)[]) {
+  public calculateNativeBalanceChanges(
+    transactionDetails: (ParsedTransactionWithMeta | null)[],
+    solPriceInUsd: number,
+  ) {
     const meta = transactionDetails[0] && transactionDetails[0].meta
 
     if (!meta) {
-      console.log('No meta information available')
+      Logger.error('No meta information available')
       return
     }
 
@@ -62,7 +67,7 @@ export class TokenUtils {
     const GAS_FEE_THRESHOLD = (transactionDetails[0]?.meta?.fee || 0) / 1e9
 
     if (!preBalances || !postBalances) {
-      console.log('No balance information available')
+      Logger.error('No balance information available')
       return
     }
 
@@ -75,12 +80,16 @@ export class TokenUtils {
       const solDifference = (postBalance! - preBalance!) / 1e9 // Convert lamports to SOL
 
       if (solDifference !== 0) {
-        balanceChanges.push({
-          accountIndex: i,
-          preBalance: preBalance! / 1e9, // Convert to SOL
-          postBalance: postBalance! / 1e9, // Convert to SOL
-          change: solDifference + GAS_FEE_THRESHOLD,
-        })
+        const solDiffWithGas = solDifference + GAS_FEE_THRESHOLD
+        const solDiffWithGasInUsd = solDiffWithGas * solPriceInUsd
+        if (Math.abs(solDiffWithGasInUsd) > minimumChange) {
+          balanceChanges.push({
+            accountIndex: i,
+            preBalance: preBalance! / 1e9, // Convert to SOL
+            postBalance: postBalance! / 1e9, // Convert to SOL
+            change: solDiffWithGas,
+          })
+        }
       }
     }
 
@@ -92,6 +101,8 @@ export class TokenUtils {
       // console.log(`Pre Balance: ${firstChange.preBalance} SOL`)
       // console.log(`Post Balance: ${firstChange.postBalance} SOL`)
       // console.log(`Change: ${firstChange.change} SOL`)
+      // console.log(`GAS FEE: ${GAS_FEE_THRESHOLD} SOL`)
+      // console.log(`DIFF: ${firstChange.postBalance - firstChange.preBalance} SOL`)
       // console.log('-----------------------------------')
       const type = firstChange!.change > 0 ? 'sell' : 'buy'
       return {
@@ -99,7 +110,7 @@ export class TokenUtils {
         balanceChange: firstChange!.change,
       }
     } else {
-      console.log('No balance changes found')
+      Logger.error(`No balance changes found according to minimum change of ${minimumChange}`)
       return {
         type: '',
         balanceChange: '',

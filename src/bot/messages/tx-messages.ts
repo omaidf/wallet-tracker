@@ -1,6 +1,7 @@
 import { FormatNumbers } from '../../lib/format-numbers'
 import { NativeParserInterface } from '../../types/general-interfaces'
 import chalk from 'chalk'
+import { TRADE_CONFIG } from '../../lib/config/trade-config'
 
 export class TxMessages {
   constructor() {}
@@ -102,7 +103,8 @@ ${marketCapText}
     const truncatedOwner = `${tx.owner.slice(0, 4)}...${tx.owner.slice(-4)}`
     const formattedMc = tx.swappedTokenMc ? FormatNumbers.formatPrice(tx.swappedTokenMc) : 'N/A'
 
-    return `
+    let message = `
+${tx.isWhaleActivity ? '🐳 Whale Activity' : ''}
 ${tx.type === 'buy' ? chalk.green('🟢 BUY') : chalk.red('🔴 SELL')} on ${chalk.yellow(tx.platform?.toUpperCase())}
 💎 Wallet: ${truncatedOwner}
 🔗 Signature: ${tx.signature}
@@ -110,6 +112,21 @@ ${tx.description}
 Price: $${tx.swappedTokenPrice?.toFixed(7)}
 Market Cap: $${formattedMc}
 Holdings: ${tx.currentHoldingPrice} (${tx.currenHoldingPercentage}%)
+${tx.isLargeBuy ? '🔥 Large Buy' : ''}
 `
+
+    if (tx.isMultiBuy && tx.multiBuyStats) {
+      message += `\n🔥 Multi-Buy Alert!
+${tx.multiBuyStats.uniqueWallets} wallets bought in the last ${TRADE_CONFIG.MULTI_BUY.TIME_WINDOW_HOURS}h
+Total SOL: ${tx.multiBuyStats.totalSolAmount.toFixed(2)} SOL`
+    }
+
+    if (tx.isMultiSell && tx.multiSellStats) {
+      message += `\n🔥 Multi-Sell Alert!
+${tx.multiSellStats.uniqueWallets} wallets sold in the last ${TRADE_CONFIG.MULTI_SELL.TIME_WINDOW_HOURS}h
+Total SOL: ${tx.multiSellStats.totalSolAmount.toFixed(2)} SOL`
+    }
+
+    return message
   }
 }

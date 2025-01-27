@@ -200,7 +200,7 @@ async function getTokenHoldings(walletAddress: string, tokenMintAddress: string)
   }
 }
 
-const TEST_WALLET = '5ho9wT4YVTbetpNBFiZAFn7sJ74GgvgjVTUWDnwmPW1U' // Example wallet
+const TEST_WALLET = 'AAAAAA9FvEidYJiK3gCp6sZ6M93uio2tk9Ep23kzZggA' // Example wallet
 
 async function main() {
   const trackWallets = new TrackWallets()

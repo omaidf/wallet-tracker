@@ -21,6 +21,12 @@ export interface NativeParserInterface {
   description: string
   balanceChange: number
   isNew: boolean
+  isLargeBuy: boolean
+  isMultiBuy: boolean
+  multiBuyStats?: MultiBuyStats
+  isMultiSell: boolean
+  multiSellStats?: MultiSellStats
+  isWhaleActivity: boolean
 }
 
 export interface CreateUserInterface {
@@ -61,4 +67,26 @@ export interface SetupWalletWatcherProps {
   userId?: string | null
   walletId?: string | null
   event: 'create' | 'delete' | 'initial' | 'update'
+}
+
+export interface MultiBuyStats {
+  uniqueWallets: number
+  totalSolAmount: number
+  recentBuys: Array<{
+    wallet: string
+    timestamp: number
+    solAmount: number
+    tokenMint: string
+  }>
+}
+
+export interface MultiSellStats {
+  uniqueWallets: number
+  totalSolAmount: number
+  recentSells: Array<{
+    wallet: string
+    timestamp: number
+    solAmount: number
+    tokenMint: string
+  }>
 }

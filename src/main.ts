@@ -3,6 +3,7 @@ import chalk from 'chalk'
 import gradient from 'gradient-string'
 
 const WALLETS_TO_TRACK = [
+  'AAAAAA9FvEidYJiK3gCp6sZ6M93uio2tk9Ep23kzZggA',
   '5tzFkiKscXHK5ZXCGbXZxdw7gTjjD1mBwuoFbhUvuAi9',
   '5VCwKtCXgCJ6kit5FybXjvriW3xELsFDhYrPSqtJNmcD',
   '5ho9wT4YVTbetpNBFiZAFn7sJ74GgvgjVTUWDnwmPW1U',

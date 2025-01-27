@@ -5,16 +5,43 @@ import { SwapType } from '../types/swap-types'
 import { FormatNumbers } from '../lib/format-numbers'
 import { NativeParserInterface } from '../types/general-interfaces'
 import { RpcConnectionManager } from '../providers/solana'
+import { Logger } from '../utils/logger'
+import { TRADE_CONFIG } from '../lib/config/trade-config'
+import { MultiBuyTracker } from '../lib/multi-buy-tracker'
+import { MultiSellTracker } from '../lib/multi-sell-tracker'
 
 export class TransactionParser {
   private tokenUtils: TokenUtils
   private tokenParser: TokenParser
   private connection: Connection
+  private multiBuyTracker = MultiBuyTracker.getInstance()
+  private multiSellTracker = MultiSellTracker.getInstance()
   constructor(private transactionSignature: string) {
-    this.connection = RpcConnectionManager.connections[0]
+    this.connection = RpcConnectionManager.logConnection
     this.tokenUtils = new TokenUtils(this.connection)
     this.transactionSignature = this.transactionSignature
     this.tokenParser = new TokenParser(this.connection)
+  }
+
+  private isSignificantBuy(solAmount: number, solPriceUsd: number, marketCap: number | null | undefined): boolean {
+    if (!marketCap || marketCap === 0) return false
+
+    const usdAmount = solAmount * solPriceUsd
+
+    // Check if meets minimum SOL amount
+    if (solAmount < TRADE_CONFIG.MIN_SOL_AMOUNT) return false
+
+    // Calculate ratio of buy amount to market cap
+    const buyRatio = usdAmount / marketCap
+
+    return buyRatio >= TRADE_CONFIG.SIGNIFICANT_BUY_RATIO
+  }
+
+  private isWhaleActivity(solAmount: number): boolean {
+    // Check if meets minimum SOL amount
+    if (solAmount < TRADE_CONFIG.WHALE_ACTIVITY.MIN_SOL_AMOUNT) return false
+
+    return true
   }
 
   public async parseRpc(
@@ -24,7 +51,7 @@ export class TransactionParser {
   ): Promise<NativeParserInterface | undefined> {
     try {
       if (transactionDetails === undefined) {
-        console.log('Transaction not found or invalid.')
+        Logger.error('Transaction not found or invalid.')
         return
       }
 
@@ -53,7 +80,7 @@ export class TransactionParser {
       const accountKeys = transactionDetails[0]?.transaction.message.accountKeys
 
       if (!accountKeys) {
-        console.log('Account keys not found in transaction details.', transactionDetails)
+        Logger.error('Account keys not found in transaction details.', transactionDetails)
         return
       }
 
@@ -83,11 +110,13 @@ export class TransactionParser {
 
       // console.log('transaction', transactions)
 
-      const nativeBalance = this.tokenUtils.calculateNativeBalanceChanges(transactionDetails)
-      // console.log('native balance', nativeBalance)
+      const nativeBalance = this.tokenUtils.calculateNativeBalanceChanges(transactionDetails, Number(solPriceUsd))
+      if (!nativeBalance?.type) {
+        return
+      }
 
       if (!preBalances || !postBalances) {
-        console.log('No balance information available')
+        Logger.error('No balance information available')
         return
       }
 
@@ -121,17 +150,10 @@ export class TransactionParser {
           : transactions[transactions.length - 1]
 
       if (!raydiumTransfer) {
-        console.log('NO RAYDIUM TRANSFER')
+        Logger.error('NO RAYDIUM TRANSFER')
         return
       }
 
-      // solPrice = await this.tokenUtils.getSolPriceGecko()
-
-      // if (!solPrice) {
-      //   solPrice = await this.tokenUtils.getSolPriceNative()
-      // }
-
-      // const solPrice = ''
       // for raydium transactions
       if (transactions.length > 1) {
         if (nativeBalance?.type === 'sell') {
@@ -139,7 +161,7 @@ export class TransactionParser {
           tokenInMint = 'So11111111111111111111111111111111111111112'
 
           if (tokenOutMint === null) {
-            console.log('NO TOKEN OUT MINT')
+            Logger.error('NO TOKEN OUT MINT')
             return
           }
 
@@ -152,7 +174,7 @@ export class TransactionParser {
           tokenOutMint = 'So11111111111111111111111111111111111111112'
 
           if (tokenInMint === null) {
-            console.log('NO TOKEN IN MINT')
+            Logger.error('NO TOKEN IN MINT')
             return
           }
 
@@ -220,6 +242,31 @@ export class TransactionParser {
           }
         }
 
+        let isLargeBuy = false
+        if (nativeBalance?.type === 'buy' && tokenMc) {
+          const solAmount = Number(totalSolSwapped || amountIn)
+          isLargeBuy = this.isSignificantBuy(solAmount, Number(solPriceUsd), tokenMc)
+        }
+
+        let isMultiBuy = false
+        if (nativeBalance?.type === 'buy') {
+          const solAmount = Number(totalSolSwapped || amountIn)
+          isMultiBuy = this.multiBuyTracker.trackBuy(owner, solAmount, tokenInMint)
+        }
+
+        let isMultiSell = false
+        if (nativeBalance?.type === 'sell') {
+          const solAmount = Number(totalSolSwapped || amountOut)
+          isMultiSell = this.multiSellTracker.trackSell(owner, solAmount, tokenOutMint)
+        }
+
+        let isWhaleActivity = false
+        if (amountIn && nativeBalance?.type === 'sell') {
+          isWhaleActivity = this.isWhaleActivity(Number(amountOut))
+        } else if (amountOut && nativeBalance?.type === 'buy') {
+          isWhaleActivity = this.isWhaleActivity(Number(amountOut))
+        }
+
         return {
           platform: swap,
           owner: owner,
@@ -233,6 +280,10 @@ export class TransactionParser {
           currenHoldingPercentage: currenHoldingPercentage,
           currentHoldingPrice: currentHoldingPrice,
           isNew: isNew,
+          isLargeBuy,
+          isWhaleActivity,
+          isMultiBuy,
+          multiBuyStats: isMultiBuy ? this.multiBuyTracker.getMultiBuyStats(tokenInMint) : undefined,
           tokenTransfers: {
             tokenInSymbol: tokenIn,
             tokenInMint: tokenInMint,
@@ -241,6 +292,8 @@ export class TransactionParser {
             tokenOutMint: tokenOutMint,
             tokenAmountOut: amountOut,
           },
+          isMultiSell,
+          multiSellStats: isMultiSell ? this.multiSellTracker.getMultiSellStats(tokenOutMint) : undefined,
         }
       }
 
@@ -322,6 +375,31 @@ export class TransactionParser {
           currentHoldingPrice = tokenHoldings.balance
         }
 
+        let isLargeBuy = false
+        if (nativeBalance?.type === 'buy' && tokenMc) {
+          const solAmount = Number(totalSolSwapped || amountIn)
+          isLargeBuy = this.isSignificantBuy(solAmount, Number(solPriceUsd), tokenMc)
+        }
+
+        let isMultiBuy = false
+        if (nativeBalance?.type === 'buy') {
+          const solAmount = Number(totalSolSwapped || amountIn)
+          isMultiBuy = this.multiBuyTracker.trackBuy(owner, solAmount, tokenInMint)
+        }
+
+        let isMultiSell = false
+        if (nativeBalance?.type === 'sell') {
+          const solAmount = Number(totalSolSwapped || amountOut)
+          isMultiSell = this.multiSellTracker.trackSell(owner, solAmount, tokenOutMint)
+        }
+
+        let isWhaleActivity = false
+        if (amountIn && nativeBalance?.type === 'sell') {
+          isWhaleActivity = this.isWhaleActivity(Number(amountOut))
+        } else if (amountOut && nativeBalance?.type === 'buy') {
+          isWhaleActivity = this.isWhaleActivity(Number(amountOut))
+        }
+
         return {
           platform: swap,
           owner: owner,
@@ -335,6 +413,10 @@ export class TransactionParser {
           isNew: isNew,
           currenHoldingPercentage: currenHoldingPercentage,
           currentHoldingPrice: currentHoldingPrice,
+          isLargeBuy,
+          isWhaleActivity,
+          isMultiBuy,
+          multiBuyStats: isMultiBuy ? this.multiBuyTracker.getMultiBuyStats(tokenInMint) : undefined,
           tokenTransfers: {
             tokenInSymbol: tokenIn,
             tokenInMint: tokenInMint,
@@ -343,6 +425,8 @@ export class TransactionParser {
             tokenOutMint: tokenOutMint,
             tokenAmountOut: amountOut,
           },
+          isMultiSell,
+          multiSellStats: isMultiSell ? this.multiSellTracker.getMultiSellStats(tokenOutMint) : undefined,
         }
       }
     } catch (error) {
