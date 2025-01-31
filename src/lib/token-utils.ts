@@ -17,10 +17,11 @@ import { BufferUtils } from './buffer-utils'
 import { RpcConnectionManager } from '../providers/solana'
 import { FormatNumbers } from './format-numbers'
 import { Logger } from '../utils/logger'
+import { TRADE_CONFIG } from './config/trade-config'
 
 dotenv.config()
 
-const minimumChange = Number(process.env.MINIMUM_CHANGE ?? 1)
+const minimumChange = Number(TRADE_CONFIG.MINIMUM_CHANGE)
 
 export class TokenUtils {
   constructor(private connection: Connection) {

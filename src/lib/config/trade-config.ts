@@ -1,5 +1,6 @@
 export const TRADE_CONFIG = {
   SIGNIFICANT_BUY_RATIO: 0.1, // 10% of market cap
+  MINIMUM_CHANGE: 1, // Minimum change in price to trigger a notification
   MIN_SOL_AMOUNT: 20, // Minimum SOL amount for a large buy
   WHALE_ACTIVITY: {
     MIN_SOL_AMOUNT: 0.2, // Minimum SOL amount for whale activity
