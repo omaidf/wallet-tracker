@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.MAX_USER_GROUPS = exports.MAX_FREE_DAILY_MESSAGES = exports.PROMOTION_PRICE = exports.SOURCE_CODE_PRICE = exports.WHALE_PLAN_FEE = exports.PRO_PLAN_FEE = exports.HOBBY_PLAN_FEE = exports.MAX_WHALE_WALLETS = exports.MAX_PRO_WALLETS = exports.MAX_HOBBY_WALLETS = exports.MAX_FREE_WALLETS = void 0;
+exports.MAX_FREE_WALLETS = 10;
+exports.MAX_HOBBY_WALLETS = 50;
+exports.MAX_PRO_WALLETS = 100;
+exports.MAX_WHALE_WALLETS = 220;
+exports.HOBBY_PLAN_FEE = 0.1 * 1e9;
+exports.PRO_PLAN_FEE = 0.4 * 1e9;
+exports.WHALE_PLAN_FEE = 0.8 * 1e9;
+exports.SOURCE_CODE_PRICE = 7 * 1e9;
+exports.PROMOTION_PRICE = 0.1;
+exports.MAX_FREE_DAILY_MESSAGES = 1000;
+exports.MAX_USER_GROUPS = 5;

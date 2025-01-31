@@ -1,22 +1,16 @@
-import { Connection, PublicKey, LogsFilter, Logs } from '@solana/web3.js'
+import { Logs, PublicKey } from '@solana/web3.js'
+import chalk from 'chalk'
 import EventEmitter from 'events'
-import { TransactionParser } from '../parsers/transaction-parser'
-import { SendTransactionMsgHandler } from '../bot/handlers/send-tx-msg-handler'
-import { SwapType, WalletWithUsers } from '../types/swap-types'
-import { RateLimit } from './rate-limit'
 import {
   JUPITER_PROGRAM_ID,
   PUMP_FUN_PROGRAM_ID,
   PUMP_FUN_TOKEN_MINT_AUTH,
   RAYDIUM_PROGRAM_ID,
 } from '../config/program-ids'
-import chalk from 'chalk'
+import { TransactionParser } from '../parsers/transaction-parser'
 import { RpcConnectionManager } from '../providers/solana'
-import { NativeParserInterface } from '../types/general-interfaces'
-import pLimit from 'p-limit'
+import { SwapType, WalletWithUsers } from '../types/swap-types'
 import { CronJobs } from './cron-jobs'
-import { PrismaUserRepository } from '../repositories/prisma/user'
-import { Logger } from '../utils/logger'
 
 export const trackedWallets: Set<string> = new Set()
 
@@ -26,9 +20,6 @@ export class WatchTransaction extends EventEmitter {
   private walletTransactions: Map<string, { count: number; startTime: number }>
   private excludedWallets: Map<string, boolean>
 
-  private rateLimit: RateLimit
-
-  private prismaUserRepository: PrismaUserRepository
   constructor() {
     super()
 
@@ -37,10 +28,6 @@ export class WatchTransaction extends EventEmitter {
     this.excludedWallets = new Map()
 
     // this.trackedWallets = new Set()
-
-    this.rateLimit = new RateLimit(this.subscriptions)
-
-    this.prismaUserRepository = new PrismaUserRepository()
   }
 
   public async watchSocket(wallets: WalletWithUsers[]): Promise<void> {
@@ -109,9 +96,6 @@ export class WatchTransaction extends EventEmitter {
             }
 
             console.log(parsed.description)
-
-            // Use bot to send message of transaction
-            await this.sendMessagesToUsers(wallet, parsed)
           },
           'confirmed',
         )
@@ -152,37 +136,6 @@ export class WatchTransaction extends EventEmitter {
 
     console.error(`Failed to fetch transaction details after ${retries} retries for signature:`, transactionSignature)
     return null
-  }
-
-  private async sendMessagesToUsers(wallet: WalletWithUsers, parsed: NativeParserInterface) {
-    const pausedUsers = (await this.prismaUserRepository.getPausedUsers(wallet.userWallets.map((w) => w.userId))) || []
-
-    const activeUsers = wallet.userWallets.filter(
-      (w) => !pausedUsers || !pausedUsers.includes(w.userId), // Include only non-paused users
-    )
-
-    // just in case, somehow sometimes I get duplicated users here, I should probably address this in the track wallets function instead
-    const uniqueActiveUsers = Array.from(new Set(activeUsers.map((user) => user.userId))).map((userId) =>
-      activeUsers.find((user) => user.userId === userId),
-    )
-
-    const limit = pLimit(30)
-
-    const tasks = uniqueActiveUsers.map((user) =>
-      limit(async () => {
-        if (user) {
-          // console.log('Users:', user)
-          try {
-            Logger.info(`Message Text: ${parsed}`)
-            Logger.info(`User ID: ${user.userId}`)
-          } catch (error) {
-            console.log(`Error sending message to user ${user.userId}`)
-          }
-        }
-      }),
-    )
-
-    await Promise.all(tasks)
   }
 
   public isRelevantTransaction(logs: Logs): { isRelevant: boolean; swap: SwapType } {

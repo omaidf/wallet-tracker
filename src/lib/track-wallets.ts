@@ -1,15 +1,14 @@
-import { Connection, Logs, PublicKey } from '@solana/web3.js'
-import { RpcConnectionManager } from '../providers/solana'
+import { Logs, PublicKey } from '@solana/web3.js'
 import { ConsoleNotificationHandler } from '../handlers/console-notification-handler'
 import { NativeParser } from '../parsers/native-parser'
-import { withRetry } from '../utils/retry'
-import { Logger } from '../utils/logger'
-import { ConnectionMonitor } from '../utils/connection-monitor'
-import fs from 'fs'
-import { CronJobs } from './cron-jobs'
 import { TransactionParser } from '../parsers/transaction-parser'
-import { WatchTransaction } from './watch-transactions'
+import { RpcConnectionManager } from '../providers/solana'
+import { ConnectionMonitor } from '../utils/connection-monitor'
+import { Logger } from '../utils/logger'
+import { withRetry } from '../utils/retry'
+import { CronJobs } from './cron-jobs'
 import { TokenUtils } from './token-utils'
+import { WatchTransaction } from './watch-transactions'
 
 export class TrackWallets {
   private consoleNotificationHandler: ConsoleNotificationHandler
@@ -107,8 +106,6 @@ export class TrackWallets {
         Logger.error('No transaction details found for', latestSignature)
         return
       }
-
-      fs.writeFileSync('transaction.json', JSON.stringify(transaction, null, 2))
 
       if (transaction?.blockTime) {
         Logger.info(`Transaction block time: ${transaction.blockTime}`)
