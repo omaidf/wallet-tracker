@@ -133,30 +133,80 @@ export class TokenUtils {
     }
   }
 
+  static async getSolPriceBinance(): Promise<string | undefined> {
+    try {
+      const response = await axios.get('https://api.binance.com/api/v3/ticker/price?symbol=SOLUSDT')
+      const data = await response.data
+      return data.price
+    } catch (error) {
+      Logger.error('BINANCE_GET_SOL_PRICE_ERROR:', error)
+      return
+    }
+  }
+
+  static async getSolPriceCryptorank(): Promise<string | undefined> {
+    try {
+      const response = await axios.get('https://api.cryptorank.io/v0/tickers', {
+        params: {
+          isTickersForPriceCalc: true,
+          limit: 1,
+          coinKeys: 'solana',
+        },
+      })
+
+      const data = await response.data
+      if (data.data && data.data[0]) {
+        return String(data.data[0].usdLast)
+      }
+      return undefined
+    } catch (error) {
+      Logger.error('CRYPTORANK_GET_SOL_PRICE_ERROR:', error)
+      return
+    }
+  }
+
   static async getSolPriceNative(): Promise<string | undefined> {
     try {
-      const id = new PublicKey('8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj')
+      // Try Binance first
+      const binancePrice = await TokenUtils.getSolPriceBinance()
+      if (binancePrice) {
+        Logger.info(`SOL PRICE FROM BINANCE: ${binancePrice}`)
+        return binancePrice
+      }
 
+      // Try Cryptorank second
+      const cryptorankPrice = await TokenUtils.getSolPriceCryptorank()
+      if (cryptorankPrice) {
+        Logger.info(`SOL PRICE FROM CRYPTORANK: ${cryptorankPrice}`)
+        return cryptorankPrice
+      }
+
+      // Try CoinGecko third
+      const geckoPrice = await TokenUtils.getSolPriceGecko()
+      if (geckoPrice) {
+        Logger.info(`SOL PRICE FROM COINGECKO: ${geckoPrice}`)
+        return geckoPrice
+      }
+
+      // Use Raydium as last resort
+      const id = new PublicKey('8sLbNZoA1cfnvMJLPfp98ZLAnFSYCFApfJKMbiXNLwxj')
       const accountInfo = await RpcConnectionManager.getRandomConnection().getAccountInfo(id)
 
       if (accountInfo === null) {
-        console.log('get pool info error')
+        Logger.error('get pool info error')
         return
       }
 
       const poolData = PoolInfoLayout.decode(accountInfo.data)
-
       const solPrice = SqrtPriceMath.sqrtPriceX64ToPrice(
         poolData.sqrtPriceX64,
         poolData.mintDecimalsA,
         poolData.mintDecimalsB,
       ).toFixed(2)
 
-      // console.log('current price -> ', solPrice)
-
       return solPrice
     } catch (error) {
-      console.log('FETCH_SOL_PRICE_ERROR')
+      Logger.error('FETCH_SOL_PRICE_ERROR:', error)
       return
     }
   }

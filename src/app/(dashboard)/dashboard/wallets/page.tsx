@@ -19,6 +19,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -27,8 +28,8 @@ import {
   deleteAllWallets,
   deleteWallet,
   fetchWallets,
-  uploadWallets,
   updateWalletStatus,
+  uploadWallets,
 } from '@/lib/api'
 import { downloadSampleCSV } from '@/lib/csv'
 import { cn } from '@/lib/utils'
@@ -44,16 +45,13 @@ import {
   PlusIcon,
   TrashIcon,
   WalletIcon,
-  PlayIcon,
-  StopIcon,
 } from '@heroicons/react/24/outline'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { format } from 'date-fns'
 import { motion } from 'framer-motion'
 import { Loader2Icon } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 
 interface Wallet {
   id: string

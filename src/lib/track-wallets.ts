@@ -33,7 +33,7 @@ export class TrackWallets {
   public async trackWallet(walletAddress: string, isMain: boolean = false) {
     try {
       const publicKey = new PublicKey(walletAddress)
-      Logger.info(`Starting to track wallet: ${walletAddress}`)
+      // Logger.info(`Starting to track wallet: ${walletAddress}`)
 
       // Get recent transactions
       if (!isMain) {
@@ -75,7 +75,7 @@ export class TrackWallets {
       })
 
       this.activeSubscriptions.set(walletAddress, subscriptionId)
-      Logger.success(`Successfully initialized tracking for ${walletAddress}`)
+      // Logger.success(`Successfully initialized tracking for ${walletAddress}`)
       return subscriptionId
     } catch (error) {
       Logger.error(`Failed to track wallet ${walletAddress}:`, error)

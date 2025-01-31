@@ -66,6 +66,44 @@ model Wallet {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  transactions Transaction[]
 
   @@index([userId])
+}
+
+model Transaction {
+  id              String   @id @default(cuid())
+  type            String   // buy or sell
+  platform        String   // SwapType
+  owner           String   // wallet address
+  signature       String   @unique
+  tokenAmountIn   String
+  tokenAmountOut  String
+  tokenInSymbol   String
+  tokenOutSymbol  String
+  tokenInMint     String
+  tokenOutMint    String
+  solPrice        String
+  tokenPrice      Float    @map("swapped_token_price")
+  marketCap       Float?   @map("swapped_token_mc")
+  holdingPercent  String   @map("current_holding_percentage")
+  holdingPrice    String   @map("current_holding_price")
+  description     String   @db.Text
+  balanceChange   Float
+  isNew           Boolean  @default(false)
+  isLargeBuy      Boolean  @default(false)
+  isMultiBuy      Boolean  @default(false)
+  isMultiSell     Boolean  @default(false)
+  isWhaleActivity Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Optional fields for multi-buy/sell stats
+  uniqueWallets   Int?
+  totalSolAmount  Float?
+  recentTxs       Json?    // Store the recent buys/sells array
+
+  // Relations
+  wallet   Wallet  @relation(fields: [owner], references: [address])
+  @@index([owner])
 }
